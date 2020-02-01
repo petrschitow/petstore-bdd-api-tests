@@ -1,0 +1,2 @@
+Feature: Operations with store
+

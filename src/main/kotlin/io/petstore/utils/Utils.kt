@@ -1,10 +1,8 @@
-package io.swagger.petstore.utils
-
-import java.lang.Math.random
+package io.petstore.utils
 
 open class Utils {
 
-    fun getRandom(from: Int = 0, to: Int = 1_000_000): Int{
+    fun getRandom(from: Long = 0, to: Long = 1_000_000): Long {
         return (from..to).random()
     }
 }

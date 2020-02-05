@@ -1,2 +1,3 @@
 petstoreService:
+  # for example:
   url: "https://prod.petstore.swagger.io/v2"

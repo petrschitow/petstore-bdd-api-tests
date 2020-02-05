@@ -1,6 +1,6 @@
 package io.swagger.petstore.constants
 
-import io.swagger.petstore.utils.ConfigUtils
+import io.petstore.utils.ConfigUtils
 
 
 object Endpoints {

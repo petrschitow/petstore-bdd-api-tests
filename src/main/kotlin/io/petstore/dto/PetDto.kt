@@ -1,7 +1,7 @@
 package io.petstore.dto
 
 data class PetDto(
-        val id: Int? = null,
+        val id: Long? = null,
         val name: String? = null,
         val category: Category? = null,
         val photoUrls: Array<String>? = null,
@@ -9,9 +9,9 @@ data class PetDto(
         val status: String? = null
 ) {
 
-    data class Category(val id: Int? = null, val name: String? = null) {}
+    data class Category(val id: Long? = null, val name: String? = null) {}
 
-    data class Tags(val id: Int? = null, val name: String? = null) {}
+    data class Tags(val id: Long? = null, val name: String? = null) {}
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,7 +34,7 @@ data class PetDto(
     }
 
     override fun hashCode(): Int {
-        var result = id ?: 0
+        var result = id?.hashCode() ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
         result = 31 * result + (category?.hashCode() ?: 0)
         result = 31 * result + (photoUrls?.contentHashCode() ?: 0)
@@ -42,5 +42,6 @@ data class PetDto(
         result = 31 * result + (status?.hashCode() ?: 0)
         return result
     }
+
 
 }

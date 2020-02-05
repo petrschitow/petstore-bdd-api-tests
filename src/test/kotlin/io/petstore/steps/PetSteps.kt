@@ -1,64 +1,72 @@
 package io.petstore.steps
 
-import io.cucumber.core.gherkin.Step
 import io.cucumber.java8.En
 import io.petstore.clients.PetClients
 import io.petstore.dto.PetDto
-import io.restassured.response.Response
-import io.swagger.petstore.utils.Utils
+import io.petstore.TestContext
+import io.petstore.utils.Utils
 import org.assertj.core.api.Assertions.assertThat
 
-class PetSteps : En {
+class PetSteps constructor(private var testContext: TestContext) : En {
 
-    lateinit var petDto: PetDto
-    lateinit var response: Response
+    var categoryId = Utils().getRandom()
+    var tagId = Utils().getRandom()
+    var photoId = Utils().getRandom()
 
     init {
 
-        Given("I have json for create a new pet with random data") {
-            petDto = PetDto(
-                    id = Utils().getRandom(),
+        Given("I have randomly generated petId and save it to testContext") {
+            testContext.petId = Utils().getRandom()
+        }
+
+        Given("I have a json to create a new pet in the store with petId from testContext") {
+            testContext.petDto = PetDto(
+                    id = testContext.petId,
                     category = PetDto.Category(
-                            id = Utils().getRandom(),
-                            name = "Test category name"),
-                    name = "Test pet name",
-                    photoUrls = arrayOf("https://somecloudbox.com/${Utils().getRandom()}.jpg"),
-                    status = "Active",
+                            id = categoryId,
+                            name = "Test category name #$categoryId"),
+                    name = "Test pet name #${testContext.petId}",
+                    photoUrls = arrayOf("https://somecloudbox.com/$photoId.jpg"),
+                    status = "Active #${testContext.petId}",
                     tags = arrayOf(PetDto.Tags(
-                            id = Utils().getRandom(),
-                            name = "Test tag name"
+                            id = tagId,
+                            name = "Test tag name #$tagId"
                     )))
         }
 
-        Given("I have already created Pet in the store with random data"){
-            petDto = PetDto(
-                    id = Utils().getRandom(),
-                    category = PetDto.Category(
-                            id = Utils().getRandom(),
-                            name = "Test category name"),
-                    name = "Test pet name",
-                    photoUrls = arrayOf("https://somecloudbox.com/${Utils().getRandom()}.jpg"),
-                    status = "Active",
-                    tags = arrayOf(PetDto.Tags(
-                            id = Utils().getRandom(),
-                            name = "Test tag name"
-                    )))
-           val response =  PetClients().addNewPetToTheStore(petDto)
-            assertThat(response.statusCode).isEqualTo(200)
+        When("I send POST-request to endpoint /pet with body from testContext to create a new pet") {
+            testContext.response = PetClients().addNewPetToTheStore(testContext.petDto!!)
         }
 
-        When("I send request to add new pet to the store$") {
-            response = PetClients().addNewPetToTheStore(petDto)
+        When("I find pet by id = {int}") { petId: Long ->
+            testContext.response = PetClients().findPetById(petId)
         }
 
-        When("I delete pet with id = {int} from the store"){petId:Int ->
-            response = PetClients().deletePetFromStoreById(petId)
+        When("I send GET-request to find pet with petId from testContext") {
+            testContext.response = PetClients().findPetById(testContext.petId!!)
         }
 
-        Then("I check that status code is {int}"){ statusCode: Int ->
-            assertThat(response.statusCode).isEqualTo(statusCode)
+        When("I send DELETE-request to delete Pet from store with petId from testContext") {
+            testContext.response = PetClients().deletePetFromStoreById(testContext.petId!!)
         }
 
+        Then("I check that the status code is {int}") {statusCode: Int ->
+            assertThat(testContext.response!!.statusCode).isEqualTo(statusCode)
+        }
 
+        Then("I check that the returned json is equivalent to the json from the testContext") {
+            val response = testContext.response!!.`as`(PetDto::class.java)
+
+            assertThat(response.id).isEqualTo(testContext.petDto!!.id)
+            assertThat(response.category!!.id).isEqualTo(testContext.petDto!!.category!!.id)
+            assertThat(response.category!!.name).isEqualTo(testContext.petDto!!.category!!.name)
+            assertThat(response.name).isEqualTo(testContext.petDto!!.name)
+            assertThat(response.photoUrls).isEqualTo(testContext.petDto!!.photoUrls)
+            assertThat(response.status).isEqualTo(testContext.petDto!!.status)
+            assertThat(response.tags!![0].id).isEqualTo(testContext.petDto!!.tags!![0].id)
+            assertThat(response.tags!![0].name).isEqualTo(testContext.petDto!!.tags!![0].name)
+
+        }
     }
 }
+

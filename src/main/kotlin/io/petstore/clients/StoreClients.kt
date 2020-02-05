@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import io.petstore.dto.StoreDto
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
-import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.response.Response
 
@@ -17,8 +16,6 @@ class StoreClients : BaseClient() {
             body(json)
         } When {
             post("/store/order")
-        } Then {
-            statusCode(200)
         } Extract {
             response()
         }
@@ -29,8 +26,6 @@ class StoreClients : BaseClient() {
             spec(requestSpecification)
         } When {
             get("/store/order/$orderId")
-        } Then {
-            statusCode(200)
         } Extract {
             response()
         }

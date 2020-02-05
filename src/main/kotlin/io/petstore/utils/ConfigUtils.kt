@@ -1,4 +1,4 @@
-package io.swagger.petstore.utils
+package io.petstore.utils
 
 import com.sksamuel.hoplite.ConfigLoader
 import io.petstore.dto.ConfigDto

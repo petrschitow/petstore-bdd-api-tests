@@ -18,7 +18,7 @@ Some tests for petstore-api using BDD approach
 
 1. Set environment (env should be test or prod. Default = test): <br/>
 For windows run command in command line: <br/>
-```export env=test```<br />
+```set env=test```<br />
 
 2. Run tests <br />
 ```mvn test -Dcucumber.filter.tags="@pet"``` - run tests only for pets <br/>

@@ -8,14 +8,12 @@ import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
 import io.swagger.petstore.constants.Endpoints.PETSTORE_URL
 
-open class BaseClient {
 
-    val requestSpecification: RequestSpecification =
-            RequestSpecBuilder()
-                    .setBaseUri(PETSTORE_URL)
-                    .setContentType(ContentType.JSON)
-                    .addFilter(RequestLoggingFilter(LogDetail.URI))
-                    .addFilter(RequestLoggingFilter(LogDetail.BODY))
-                    .addFilter(ResponseLoggingFilter(LogDetail.BODY))
-                    .build()
-}
+val requestSpecification: RequestSpecification =
+        RequestSpecBuilder()
+                .setBaseUri(PETSTORE_URL)
+                .setContentType(ContentType.JSON)
+                .addFilter(RequestLoggingFilter(LogDetail.URI))
+                .addFilter(RequestLoggingFilter(LogDetail.BODY))
+                .addFilter(ResponseLoggingFilter(LogDetail.BODY))
+                .build()

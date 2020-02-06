@@ -3,10 +3,10 @@ package io.petstore.dto
 import java.util.*
 
 data class StoreDto(
-        val id: Int? = null,
-        val petId: Int? = null,
+        val id: Long? = null,
+        val petId: Long? = null,
         val quantity: Int? = null,
-        val shipDate: Date? = null,
+        val shipDate: String? = null,
         val status: String? = null,
         val complete: Boolean? = null
 ) {
@@ -25,8 +25,8 @@ data class StoreDto(
     }
 
     override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (petId ?: 0)
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (petId?.hashCode() ?: 0)
         result = 31 * result + (quantity ?: 0)
         result = 31 * result + (shipDate?.hashCode() ?: 0)
         result = 31 * result + (status?.hashCode() ?: 0)

@@ -7,27 +7,24 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.response.Response
 
-class StoreClients : BaseClient() {
-
-    fun placeOrderForPet(storeDto: StoreDto): Response {
-        val json = Gson().toJson(storeDto)
-        return Given {
-            spec(requestSpecification)
-            body(json)
-        } When {
-            post("/store/order")
-        } Extract {
-            response()
-        }
+fun placeOrderForPet(storeDto: StoreDto?): Response {
+    val json = Gson().toJson(storeDto)
+    return Given {
+        spec(requestSpecification)
+        body(json)
+    } When {
+        post("/store/order")
+    } Extract {
+        response()
     }
+}
 
-    fun findOrderById(orderId: String): Response {
-        return Given {
-            spec(requestSpecification)
-        } When {
-            get("/store/order/$orderId")
-        } Extract {
-            response()
-        }
+fun findOrderById(orderId: Long?): Response {
+    return Given {
+        spec(requestSpecification)
+    } When {
+        get("/store/order/$orderId")
+    } Extract {
+        response()
     }
 }

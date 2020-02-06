@@ -1,23 +1,22 @@
 package io.petstore.steps
 
 import io.cucumber.java8.En
-import io.petstore.clients.PetClients
 import io.petstore.dto.PetDto
 import io.petstore.TestContext
-import io.petstore.utils.Utils
+import io.petstore.clients.addNewPetToTheStore
+import io.petstore.clients.deletePetFromStoreById
+import io.petstore.clients.findPetById
+import io.petstore.dto.PetStatuses
+import io.petstore.utils.getRandom
 import org.assertj.core.api.Assertions.assertThat
 
 class PetSteps constructor(private var testContext: TestContext) : En {
 
-    var categoryId = Utils().getRandom()
-    var tagId = Utils().getRandom()
-    var photoId = Utils().getRandom()
+    var categoryId = getRandom()
+    var tagId = getRandom()
+    var photoId = getRandom()
 
     init {
-
-        Given("I have randomly generated petId and save it to testContext") {
-            testContext.petId = Utils().getRandom()
-        }
 
         Given("I have a json to create a new pet in the store with petId from testContext") {
             testContext.petDto = PetDto(
@@ -27,7 +26,7 @@ class PetSteps constructor(private var testContext: TestContext) : En {
                             name = "Test category name #$categoryId"),
                     name = "Test pet name #${testContext.petId}",
                     photoUrls = arrayOf("https://somecloudbox.com/$photoId.jpg"),
-                    status = "Active #${testContext.petId}",
+                    status = PetStatuses.AVAILABLE.status,
                     tags = arrayOf(PetDto.Tags(
                             id = tagId,
                             name = "Test tag name #$tagId"
@@ -35,26 +34,22 @@ class PetSteps constructor(private var testContext: TestContext) : En {
         }
 
         When("I send POST-request to endpoint /pet with body from testContext to create a new pet") {
-            testContext.response = PetClients().addNewPetToTheStore(testContext.petDto!!)
+            testContext.response = addNewPetToTheStore(testContext.petDto!!)
         }
 
         When("I find pet by id = {int}") { petId: Long ->
-            testContext.response = PetClients().findPetById(petId)
+            testContext.response = findPetById(petId)
         }
 
         When("I send GET-request to find pet with petId from testContext") {
-            testContext.response = PetClients().findPetById(testContext.petId!!)
+            testContext.response = findPetById(testContext.petId!!)
         }
 
         When("I send DELETE-request to delete Pet from store with petId from testContext") {
-            testContext.response = PetClients().deletePetFromStoreById(testContext.petId!!)
+            testContext.response = deletePetFromStoreById(testContext.petId!!)
         }
 
-        Then("I check that the status code is {int}") {statusCode: Int ->
-            assertThat(testContext.response!!.statusCode).isEqualTo(statusCode)
-        }
-
-        Then("I check that the returned json is equivalent to the json from the testContext") {
+        Then("I check response with information about pet") {
             val response = testContext.response!!.`as`(PetDto::class.java)
 
             assertThat(response.id).isEqualTo(testContext.petDto!!.id)
@@ -65,7 +60,6 @@ class PetSteps constructor(private var testContext: TestContext) : En {
             assertThat(response.status).isEqualTo(testContext.petDto!!.status)
             assertThat(response.tags!![0].id).isEqualTo(testContext.petDto!!.tags!![0].id)
             assertThat(response.tags!![0].name).isEqualTo(testContext.petDto!!.tags!![0].name)
-
         }
     }
 }

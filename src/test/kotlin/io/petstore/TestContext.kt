@@ -9,5 +9,5 @@ class TestContext {
     var storeDto: StoreDto? = null
     var petDto: PetDto? = null
     var petId: Long? = null
-
+    var orderId: Long? = null
 }

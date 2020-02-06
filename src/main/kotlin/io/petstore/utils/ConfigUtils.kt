@@ -3,7 +3,6 @@ package io.petstore.utils
 import com.sksamuel.hoplite.ConfigLoader
 import io.petstore.dto.ConfigDto
 
-class ConfigUtils {
 
     val env = if (System.getenv("env").isNullOrEmpty()) "test" else System.getenv("env")
 
@@ -17,4 +16,3 @@ class ConfigUtils {
         return ConfigLoader().loadConfigOrThrow(configFile)
     }
 
-}
